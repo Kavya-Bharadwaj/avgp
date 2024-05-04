@@ -8,12 +8,14 @@ Testing = True# Set to True --> if want to see what the car is seeing
 Profiling = False # Set to True --> If you want to profile code
 
 debugging = True # Set to True --> If you want to debug code
+#debugging = False # Set to True --> If you want to debug code
 clr_segmentation_tuning = True # Set to True --> If you want to tune color segmentation parameters
 
 Detect_lane_N_Draw = True
 
 vid_path = os.path.abspath("Detection/Lanes/Inputs/signs_forward.mp4")
 #vid_path = os.path.abspath("Detection/Lanes/Inputs/in_16_2.avi")
+#vid_path = os.path.abspath("Detection/Lanes/Inputs/test_video.mp4")
 loopCount=0
 
 

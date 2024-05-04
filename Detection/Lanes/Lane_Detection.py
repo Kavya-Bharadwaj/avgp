@@ -81,8 +81,8 @@ def FindClosestLane(OuterLanes,MidLane,OuterLane_Points):
 
 	Outer_Lanes_ret= np.zeros(OuterLanes.shape,OuterLanes.dtype)
 	
-	Mid_cnts = cv2.findContours(MidLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
-	Outer_cnts = cv2.findContours(OuterLanes, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
+	Mid_cnts = cv2.findContours(MidLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+	Outer_cnts = cv2.findContours(OuterLanes, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
 	Ref=(0,0)
 	if(Mid_cnts):
@@ -187,7 +187,7 @@ def FindClosestLane(OuterLanes,MidLane,OuterLane_Points):
 		#print(" Mid_lower_row = ", Mid_lowP[1])
 		#print(" Mid_higher_row = ", Mid_highP[1])
 		OuterLanes = cv2.line(OuterLanes,LanePoint_lower,LanePoint_top,255,1)		
-		Outer_cnts = cv2.findContours(OuterLanes, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
+		Outer_cnts = cv2.findContours(OuterLanes, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 		return OuterLanes, Outer_cnts, Mid_cnts, Offset_correction
 	else:
 		return OuterLanes, Outer_cnts, Mid_cnts, Offset_correction
@@ -256,8 +256,8 @@ def ExtendShortLane(MidLane,Mid_cnts,Outer_cnts,OuterLane):
 
 def RefineMidEdgeROi(Mid_trajectory,Mid_ROI_mask,Mid_edge_ROI):
 
-	contours_trajectory = cv2.findContours(Mid_trajectory,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[1]
-	contours = cv2.findContours(Mid_ROI_mask,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[1]
+	contours_trajectory = cv2.findContours(Mid_trajectory,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[0]
+	contours = cv2.findContours(Mid_ROI_mask,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[0]
 	Mid_ROI_mask_refined = np.zeros(Mid_ROI_mask.shape,Mid_ROI_mask.dtype)
 
 	Modified= False
@@ -276,7 +276,7 @@ def RefineMidEdgeROi(Mid_trajectory,Mid_ROI_mask,Mid_edge_ROI):
 
 def EstimateNonMidMask(MidEdgeROi):
 	Mid_Hull_Mask = np.zeros((MidEdgeROi.shape[0], MidEdgeROi.shape[1], 1), dtype=np.uint8)
-	contours = cv2.findContours(MidEdgeROi,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[1]
+	contours = cv2.findContours(MidEdgeROi,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[0]
 	if contours:
 		hull_list = []
 		contours = np.concatenate(contours)
@@ -289,8 +289,8 @@ def EstimateNonMidMask(MidEdgeROi):
 
 def LanePoints(MidLane,OuterLane,Offset_correction):
 
-	Mid_cnts = cv2.findContours(MidLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
-	Outer_cnts = cv2.findContours(OuterLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
+	Mid_cnts = cv2.findContours(MidLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+	Outer_cnts = cv2.findContours(OuterLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
 	if(Mid_cnts and Outer_cnts):
 		Mid_cnts_Rowsorted = Cord_Sort(Mid_cnts,"rows")
@@ -318,7 +318,7 @@ def DrawProbablePath(Outer_Lane,Mid_lane,Mid_cnts,Outer_cnts,MidEdgeROi,frame,Of
 		cv2.imshow("[D_DataExt Lanes_combined]",Lanes_combined)
 	#Creating an empty image
 	ProjectedLane = np.zeros(Lanes_combined.shape,Lanes_combined.dtype)
-	cnts = cv2.findContours(Lanes_combined,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[1]
+	cnts = cv2.findContours(Lanes_combined,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[0]
 
 	drawn=False
 	if cnts:
@@ -395,7 +395,7 @@ def fetch_LaneInformation(Outer_Lane,Mid_lane,Mid_cnts,Outer_cnts,MidEdgeROi,fra
 	"""	
 	Out_image = frame
 	Lanes_combined = cv2.bitwise_or(Outer_Lane,Mid_lane)
-	cnts = cv2.findContours(Lanes_combined,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[1]
+	cnts = cv2.findContours(Lanes_combined,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[0]
 
 	if cnts:
 		#MODED# Traj_lowP,Traj_upP = LanePoints(Mid_lane,Outer_Lane,Mid_cnts,Outer_cnts,NonExtendedLane)
@@ -428,6 +428,8 @@ def Detect_Lane(frame):
                            e.g. car approaching a right turn so road direction is around or less then 45 deg
 						   				cars direction is straight so it is around 90 deg
 	"""
+	#kvy5kor Debug only
+	cv2.imshow("Frame in Detect Lane", frame)
 	Distance = -1000
 	Curvature = -1000
 	frame_cropped = frame[config.CropHeight_resized_crop:,:]

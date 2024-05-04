@@ -5,7 +5,7 @@ from Detection.Lanes.utilities import Cord_Sort,findlaneCurvature
 
 def EstimateNonMidMask(MidEdgeROi):
 	Mid_Hull_Mask = np.zeros((MidEdgeROi.shape[0], MidEdgeROi.shape[1], 1), dtype=np.uint8)
-	contours = cv2.findContours(MidEdgeROi,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[1]
+	contours = cv2.findContours(MidEdgeROi,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[0]
 	if contours:
 		hull_list = []
 		contours = np.concatenate(contours)
@@ -20,8 +20,8 @@ def EstimateNonMidMask(MidEdgeROi):
 
 def LanePoints(MidLane,OuterLane,Offset_correction):
 
-	Mid_cnts = cv2.findContours(MidLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
-	Outer_cnts = cv2.findContours(OuterLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
+	Mid_cnts = cv2.findContours(MidLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+	Outer_cnts = cv2.findContours(OuterLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
 	if(Mid_cnts and Outer_cnts):
 		Mid_cnts_Rowsorted = Cord_Sort(Mid_cnts,"rows")
@@ -86,7 +86,7 @@ def FetchInfoAndDisplay(Mid_lane_edge,Mid_lane,Outer_Lane,frame,Offset_correctio
 		cv2.imshow("[FetchInfoAndDisplay] Lanes_combined",Lanes_combined)
 		#Creating an empty image
 		ProjectedLane = np.zeros(Lanes_combined.shape,Lanes_combined.dtype)
-		cnts = cv2.findContours(Lanes_combined,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[1]
+		cnts = cv2.findContours(Lanes_combined,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[0]
 
 		# 5. Fill ProjectedLane with fillConvexPoly
 		if cnts:

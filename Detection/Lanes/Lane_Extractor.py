@@ -48,6 +48,17 @@ def OnSatLowChange_Y(val):
     Sat_Low_Y = val
     MaskExtract()
 
+def clr_segment(HSL,lower_range,upper_range):
+    # 2. Performing Color Segmentation on Given Range
+    lower = np.array( [lower_range[0],lower_range[1] ,lower_range[2]] )
+    upper = np.array( [upper_range[0]    ,255     ,255])
+    mask = cv2.inRange(HSL, lower, upper)
+    # 3. Dilating Segmented ROI's
+    kernel = cv2.getStructuringElement(shape=cv2.MORPH_ELLIPSE, ksize=(3,3))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_DILATE, kernel)
+    return mask
+
+
 def MaskExtract():
     mask   = clr_segment(HLS,(Hue_Low  ,Lit_Low   ,Sat_Low  ),(255       ,255,255))
     mask_Y = clr_segment(HLS,(Hue_Low_Y,Lit_Low_Y ,Sat_Low_Y),(Hue_High_Y,255,255))#Combine 6ms
@@ -72,15 +83,7 @@ if(config.clr_segmentation_tuning):
     cv2.createTrackbar("Lit_L","[[A_ColorSeg mask_Y] mask_Y]",Lit_Low_Y,255,OnLitLowChange_Y)
     cv2.createTrackbar("Sat_L","[[A_ColorSeg mask_Y] mask_Y]",Sat_Low_Y,255,OnSatLowChange_Y)
 
-def clr_segment(HSL,lower_range,upper_range):
-    # 2. Performing Color Segmentation on Given Range
-    lower = np.array( [lower_range[0],lower_range[1] ,lower_range[2]] )
-    upper = np.array( [upper_range[0]    ,255     ,255])
-    mask = cv2.inRange(HSL, lower, upper)
-    # 3. Dilating Segmented ROI's
-    kernel = cv2.getStructuringElement(shape=cv2.MORPH_ELLIPSE, ksize=(3,3))
-    mask = cv2.morphologyEx(mask, cv2.MORPH_DILATE, kernel)
-    return mask
+
 
 def LaneROI(frame,mask,minArea):
     frame_Lane = cv2.bitwise_and(frame,frame,mask=mask)# R & R = R

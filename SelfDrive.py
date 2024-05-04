@@ -1,5 +1,6 @@
 from Detection.Signs.SignDetectionApi import detect_Signs
 from Detection.Lanes.Lane_Detection import Detect_Lane
+#import Detection.Lanes.Lane_Detection
 
 import config
 if (config.debugging==False):
@@ -8,20 +9,33 @@ if (config.debugging==False):
     
 import cv2
 import time
+import numpy as np
+
+cv2.startWindowThread()
 
 if (config.debugging):
 	#cv2.namedWindow('Vid',cv2.WINDOW_NORMAL)
-	cap = cv2.VideoCapture(config.vid_path)
-	fps = cap.get(cv2.CAP_PROP_FPS)
-	frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    cap = cv2.VideoCapture(config.vid_path)
+    
+    # if (cap.isOpened() == False):
+    #     print("Error opening video stream or file")
+    # else:
+    #     print("Video is opened")
+
+    # Get the frames per secondif 
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    #cap.set(cv2.CAP_PROP_POS_FRAMES, 5*fps) 
+    
+     
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 	
-	if(frame_count==0):
-		frame_count=1127
-	duration = int(frame_count / fps)
-	print(fps)
-	print(frame_count)
-	print(duration)
-	Video_pos = 35#sec
+    if(frame_count==0):
+        frame_count=1127
+    duration = int(frame_count / fps)
+    print(fps)
+    print(frame_count)
+    print(duration)
+    Video_pos = 35#sec
 else:
     from imutils.video.pivideostream import PiVideoStream
 
@@ -31,6 +45,48 @@ def OnVidPosChange(val):
 	Video_pos = val
 	print(Video_pos)
 	cap.set(cv2.CAP_PROP_POS_MSEC,Video_pos*1000)
+
+def play_video(video_path):
+    print("In function play_video")
+    # Open the video file
+    cap = cv2.VideoCapture(video_path)
+
+    # Check if video opened successfully
+    if not cap.isOpened(): 
+        print("Error opening video file")
+    frame_number = 0  # Initialize frame counter
+    # Read until video is completed
+    if(cap.isOpened()):
+        # Capture frame-by-frame
+        ret, frame = cap.read()
+        if ret == True:
+            frame_number += 1  # Increment frame counter
+            print(f"Frame number: {frame_number}")  # Print frame number
+            
+            # Display the resulting frame
+            cv2.namedWindow("namedWindow")
+            cv2.imshow(f"Frame number: {frame_number}", frame)
+            cv2.waitKey(1)
+            frame_number+=1
+            print(f"Frame number: {frame_number}")  # Print frame number
+            ret, frame = cap.read()
+            cv2.imshow(f"Frame number: {frame_number}", frame)
+            cv2.waitKey(1)
+            #time.sleep(5)
+            # Press Q on keyboard to exit
+            # if cv2.waitKey(25) & 0xFF == ord('q'):
+            #     break
+        # Break the loop
+        # else: 
+        #     break
+
+    # When everything done, release the video capture object
+    cap.release()
+
+    # Closes all the frames
+    #cv2.destroyAllWindows()
+
+
 
 def main():
     """ 
@@ -44,6 +100,8 @@ def main():
     if (config.debugging):
         #cv2.createTrackbar('Video_pos','Vid',Video_pos,duration,OnVidPosChange)
         print("Debugging on Local Video")
+        # Use the function
+        #play_video(config.vid_path)
     else:
         forward()
         vs = PiVideoStream().start()
@@ -59,16 +117,31 @@ def main():
         start_detection = time.time()
         start_ = time.time()
         if(config.debugging):
+            if cap.isOpened()==False:
+                 print("Error opening video stream or file")
+            else:
+                 print("Video is opened")
+
             ret, frame = cap.read()# 6 ms
-            if ret:
-                frame = cv2.resize(frame,(config.Resized_width,config.Resized_height))
+            #if ret:
+            if True:
+                #frame = cv2.resize(frame,(config.Resized_width,config.Resized_height))
+                pass
             else:
                 break
         else:
             frame = vs.read().copy()
             #frame = cv2.resize(frame,(config.Resized_width,config.Resized_height))
 
+        cv2.namedWindow("namedWindow")
+        cv2.imshow("What's read from video input 1!!!",frame)
+        cv2.waitKey(1)
         
+        ret, frame = cap.read()
+        cv2.imshow("What's read from video input 2 !!!",frame)
+        cv2.waitKey(1)
+
+        #time.sleep(30)
         frame_orig = frame.copy()# Keep it for
 
         end_ = time.time()

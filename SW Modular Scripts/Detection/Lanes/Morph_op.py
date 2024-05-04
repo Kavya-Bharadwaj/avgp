@@ -9,7 +9,7 @@ def BwareaOpen(img,MinArea):
 
     thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY)[1]
     # Filter using contour area and remove small noise
-    cnts = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[1]
+    cnts = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
     cnts_TooSmall = []
     for index, cnt in enumerate(cnts):
         area = cv2.contourArea(cnt)
@@ -49,7 +49,7 @@ def RetLargestContour(gray):
     thresh=np.zeros(gray.shape,dtype=gray.dtype)
     _,bin_img = cv2.threshold(gray,0,255,cv2.THRESH_BINARY)
     #Find the two Contours for which you want to find the min distance between them.
-    cnts = cv2.findContours(bin_img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[1]
+    cnts = cv2.findContours(bin_img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
     Max_Cntr_area = 0
     Max_Cntr_idx= -1
     for index, cnt in enumerate(cnts):
@@ -67,7 +67,7 @@ def RetLargestContour_OuterLane(gray,minArea):
     thresh=np.zeros(gray.shape,dtype=gray.dtype)
     _,bin_img = cv2.threshold(gray,0,255,cv2.THRESH_BINARY)
     #Find the two Contours for which you want to find the min distance between them.
-    cnts = cv2.findContours(bin_img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[1]
+    cnts = cv2.findContours(bin_img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
     Max_Cntr_area = 0
     Max_Cntr_idx= -1
     for index, cnt in enumerate(cnts):
@@ -113,7 +113,7 @@ def Ret_LowestEdgePoints(gray):
 
     _,bin_img = cv2.threshold(gray,0,255,cv2.THRESH_BINARY)
         #Find the two Contours for which you want to find the min distance between them.
-    cnts = cv2.findContours(bin_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
+    cnts = cv2.findContours(bin_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
     thresh = cv2.drawContours(thresh, cnts, 0, (255,255,255), 1) # [ contour = less then minarea contour, contourIDx, Colour , Thickness ]
     # Boundary of the Contour is extracted and Saved in Thresh
 
@@ -125,7 +125,7 @@ def Ret_LowestEdgePoints(gray):
     Contour_TopBot_PortionCut = ROI_extracter(thresh,(0, Top_Row + 25),(thresh.shape[1],Bot_Row-15))
     #cv2.imshow("Contour_TopBot_PortionCut",Contour_TopBot_PortionCut)
 
-    cnts2 = cv2.findContours(Contour_TopBot_PortionCut, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
+    cnts2 = cv2.findContours(Contour_TopBot_PortionCut, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
     LowRow_a=-1
     LowRow_b=-1
@@ -189,7 +189,7 @@ def Estimate_MidLane(BW,MaxDistance):
     #cv2.namedWindow("BW_zero",cv2.WINDOW_NORMAL)
     BW_zero= cv2.cvtColor(BW,cv2.COLOR_GRAY2BGR)
     #Find the two Contours for which you want to find the min distance between them.
-    cnts= cv2.findContours(BW, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[1]#3ms
+    cnts= cv2.findContours(BW, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]#3ms
     MinArea=1
     cnts_Legit=[]
     for index, _ in enumerate(cnts):

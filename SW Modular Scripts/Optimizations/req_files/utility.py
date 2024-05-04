@@ -8,7 +8,7 @@ def RetLargestContour(gray):
     thresh=np.zeros(gray.shape,dtype=gray.dtype)
     _,bin_img = cv2.threshold(gray,0,255,cv2.THRESH_BINARY)
     #Find the two Contours for which you want to find the min distance between them.
-    cnts = cv2.findContours(bin_img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[1]
+    cnts = cv2.findContours(bin_img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
     Max_Cntr_area = 0
     Max_Cntr_idx= -1
     for index, cnt in enumerate(cnts):
@@ -43,7 +43,7 @@ def Estimate_MidLane(BW,MaxDistance):
     #cv2.namedWindow("BW_zero",cv2.WINDOW_NORMAL)
     BW_zero= cv2.cvtColor(BW,cv2.COLOR_GRAY2BGR)
     #Find the two Contours for which you want to find the min distance between them.
-    cnts= cv2.findContours(BW, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[1]#3ms
+    cnts= cv2.findContours(BW, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]#3ms
     MinArea=1
     cnts_Legit=[]
     for index, _ in enumerate(cnts):

@@ -67,8 +67,8 @@ def GetYellowInnerEdge(OuterLanes,MidLane,OuterLane_Points):
 	Outer_Lanes_ret= np.zeros(OuterLanes.shape,OuterLanes.dtype)
 	
 	# 1. Extracting Mid and OuterLane Contours
-	Mid_cnts = cv2.findContours(MidLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
-	Outer_cnts = cv2.findContours(OuterLanes, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
+	Mid_cnts = cv2.findContours(MidLane, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+	Outer_cnts = cv2.findContours(OuterLanes, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
 	# 2. Checking if OuterLane was Present initially or not
 	if not Outer_cnts:
@@ -186,7 +186,7 @@ def GetYellowInnerEdge(OuterLanes,MidLane,OuterLane_Points):
 		OuterLanes = cv2.line(OuterLanes,LanePoint_lower,LanePoint_top,255,2)	
 		
 		# 4. [Midlane But , No OuterLanes!!!] _ C : Find OuterLane Contours	
-		Outer_cnts = cv2.findContours(OuterLanes, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
+		Outer_cnts = cv2.findContours(OuterLanes, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
 		return OuterLanes, Outer_cnts, Mid_cnts, Offset_correction
 		
